@@ -1,7 +1,9 @@
 import { GoogleButton } from "@/components/google-button";
 import { PaymentButton } from "@/components/payment-button";
 import { Profile } from "@/components/profile";
+import { Button } from "@/components/ui/button";
 import { getServerSession } from "@/lib/get-server-session";
+import Link from "next/link";
 
 export default async function Home() {
   const { session, user } = await getServerSession();
@@ -14,9 +16,11 @@ export default async function Home() {
 
       {user?.stripeCustomerId}
 
-      <div>Hello {user?.isPro ? "true" : "false "}</div>
+      <div>Hello user, {user?.isPro ? <h1>IsPro</h1> : <PaymentButton />}</div>
 
-      {session && <PaymentButton />}
+      <Link href={"/dashboard"}>
+        <Button>Dashboard</Button>
+      </Link>
     </div>
   );
 }

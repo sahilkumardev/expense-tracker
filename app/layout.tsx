@@ -2,11 +2,9 @@ import "@/styles/globals.css";
 
 import type { Metadata } from "next";
 import { MaxWidthWrapper } from "@/components/max-with-wrapper";
-import { SiteHeader } from "@/components/site-header";
-import { SiteFooter } from "@/components/site-footer";
-import { Background } from "@/components/background";
 import { FontWrapper } from "@/components/font-wrapper";
 import { ThemeProvider } from "@/components/theme-provider";
+import { Background } from "@/components/background";
 
 export const metadata: Metadata = {
   title: "Expenses Tracker",
@@ -87,9 +85,7 @@ export default function RootLayout({
           <FontWrapper>
             <MaxWidthWrapper>
               <Background />
-              <SiteHeader />
               {children}
-              <SiteFooter />
             </MaxWidthWrapper>
           </FontWrapper>
         </ThemeProvider>
