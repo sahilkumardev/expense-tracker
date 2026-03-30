@@ -1,9 +1,7 @@
-"use client";
+import { getServerSession } from "@/lib/get-server-session";
 
-import { authClient } from "@/lib/auth-client";
+export async function Profile() {
+  const { user } = await getServerSession();
 
-export function Profile() {
-  const { data: session, isPending } = authClient.useSession();
-
-  return <div>email = {isPending ? "Loading..." : session?.user.email}</div>;
+  return <div>email = {user?.email}</div>;
 }
