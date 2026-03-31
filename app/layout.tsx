@@ -5,6 +5,7 @@ import { MaxWidthWrapper } from "@/components/max-with-wrapper";
 import { FontWrapper } from "@/components/font-wrapper";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Background } from "@/components/background";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 export const metadata: Metadata = {
   title: "Expenses Tracker",
@@ -76,19 +77,21 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="dark"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <FontWrapper>
-            <MaxWidthWrapper>
-              <Background />
-              {children}
-            </MaxWidthWrapper>
-          </FontWrapper>
-        </ThemeProvider>
+        <TooltipProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="dark"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <FontWrapper>
+              <MaxWidthWrapper>
+                <Background />
+                {children}
+              </MaxWidthWrapper>
+            </FontWrapper>
+          </ThemeProvider>
+        </TooltipProvider>
       </body>
     </html>
   );
