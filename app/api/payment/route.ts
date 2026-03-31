@@ -1,16 +1,15 @@
+import { getServerSession } from "@/lib/get-server-session";
 import { NextRequest, NextResponse } from "next/server";
 import { User } from "@/app/generated/prisma/client";
-import { auth, stripeClient } from "@/lib/auth";
-import { headers } from "next/headers";
+import { stripeClient } from "@/lib/auth";
 
 export async function POST(req: NextRequest) {
-  const session = await auth.api.getSession({ headers: await headers() });
+  const { user } = await getServerSession();
 
-  if (!session?.user) {
+  if (!user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const user = session.user;
   const stripeCustomerId = (user as User).stripeCustomerId;
 
   if (!stripeCustomerId) {
@@ -20,7 +19,6 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  // Create a one-time Checkout Session for ₹199
   const checkoutSession = await stripeClient.checkout.sessions.create({
     mode: "payment",
     customer: stripeCustomerId,
@@ -30,7 +28,7 @@ export async function POST(req: NextRequest) {
         quantity: 1,
         price_data: {
           currency: "inr",
-          unit_amount: 19900, // ₹199 in paise
+          unit_amount: 19900,
           product_data: {
             name: "Life Time Access",
             description: "Lifetime access to the premium feature",
