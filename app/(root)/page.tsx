@@ -18,7 +18,7 @@ export default async function Home() {
 
       <div>Hello user, {user?.isPro ? <h1>IsPro</h1> : <PaymentButton />}</div>
 
-      <Link href={"/dashboard"}>
+      <Link href={"/dashboard"} prefetch={false}>
         <Button>Dashboard</Button>
       </Link>
     </div>
