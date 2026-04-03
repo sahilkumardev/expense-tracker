@@ -1,7 +1,6 @@
 "use client";
 
 import * as React from "react";
-import Script from "next/script";
 import { useTheme } from "next-themes";
 
 import { cn } from "@/lib/utils";
@@ -50,42 +49,5 @@ export function ModeSwitcher() {
       </svg>
       <span className="sr-only">Toggle theme</span>
     </Button>
-  );
-}
-
-export function DarkModeScript() {
-  return (
-    // eslint-disable-next-line @next/next/no-before-interactive-script-outside-document
-    <Script
-      id="dark-mode-listener"
-      strategy="beforeInteractive"
-      dangerouslySetInnerHTML={{
-        __html: `
-            (function() {
-              // Forward D key
-              document.addEventListener('keydown', function(e) {
-                if ((e.key === 'd' || e.key === 'D') && !e.metaKey && !e.ctrlKey && !e.altKey) {
-                  if (
-                    (e.target instanceof HTMLElement && e.target.isContentEditable) ||
-                    e.target instanceof HTMLInputElement ||
-                    e.target instanceof HTMLTextAreaElement ||
-                    e.target instanceof HTMLSelectElement
-                  ) {
-                    return;
-                  }
-                  e.preventDefault();
-                  if (window.parent && window.parent !== window) {
-                    window.parent.postMessage({
-                      type: '${DARK_MODE_FORWARD_TYPE}',
-                      key: e.key
-                    }, '*');
-                  }
-                }
-              });
-
-            })();
-          `,
-      }}
-    />
   );
 }
