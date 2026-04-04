@@ -7,6 +7,8 @@ CREATE TABLE "user" (
     "image" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
+    "isPro" BOOLEAN NOT NULL DEFAULT false,
+    "stripeCustomerId" TEXT,
 
     CONSTRAINT "user_pkey" PRIMARY KEY ("id")
 );
