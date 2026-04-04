@@ -5,15 +5,7 @@ import {
   SidebarGroup,
   SidebarRail,
 } from "@/components/ui/sidebar";
-import {
-  Search,
-  Sparkles,
-  Home,
-  Inbox,
-  Calendar,
-  Settings2,
-  MessageCircleQuestion,
-} from "lucide-react";
+import { Home, Calendar, Settings2, MessageCircleQuestion } from "lucide-react";
 
 import {
   SidebarMenu,
@@ -24,6 +16,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Logo } from "@/components/logo";
+import { getServerSession } from "@/lib/get-server-session";
 
 const data = {
   navMain: [
@@ -58,9 +51,11 @@ const data = {
   },
 };
 
-export function SidebarLeft({
+export async function SidebarLeft({
   ...props
 }: React.ComponentProps<typeof Sidebar>) {
+  const { user } = await getServerSession();
+
   return (
     <Sidebar
       {...props}
@@ -102,12 +97,12 @@ export function SidebarLeft({
         <SidebarGroup className="p-0">
           <SidebarMenuButton className="py-8 bg-sidebar-accent">
             <Avatar className="h-8 w-8 rounded-lg">
-              <AvatarImage src={data.user.avatar} alt={data.user.name} />
-              <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+              <AvatarImage src={user?.image as string} alt={user?.name} />
+              <AvatarFallback className="rounded-lg">ET</AvatarFallback>
             </Avatar>
             <div className="grid flex-1 text-left text-sm leading-tight">
-              <span className="truncate font-medium">{data.user.name}</span>
-              <span className="truncate text-xs">{data.user.email}</span>
+              <span className="truncate font-medium">{user?.name}</span>
+              <span className="truncate text-xs">{user?.email}</span>
             </div>
             <Badge>Pro</Badge>
           </SidebarMenuButton>

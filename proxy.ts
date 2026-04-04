@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 const PUBLIC_ROUTES = ["/", "/auth/login", "/auth/register", "/dashboard"];
-const PROTECTED_ROUTES = ["/"];
+const PROTECTED_ROUTES = ["/dashboard"];
 
 function matchesRoute(pathname: string, route: string): boolean {
   return pathname === route || pathname.startsWith(`${route}/`);
