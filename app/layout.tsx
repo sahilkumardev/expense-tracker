@@ -6,6 +6,7 @@ import { FontWrapper } from "@/components/font-wrapper";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Background } from "@/components/background";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { Toaster } from "@/components/ui/sonner";
 
 export const metadata: Metadata = {
   title: "Expenses Tracker",
@@ -88,6 +89,7 @@ export default function RootLayout({
               <MaxWidthWrapper>
                 <Background />
                 {children}
+                <Toaster richColors />
               </MaxWidthWrapper>
             </FontWrapper>
           </ThemeProvider>

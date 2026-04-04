@@ -6,6 +6,7 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar";
 import { Home, Calendar, Settings2, MessageCircleQuestion } from "lucide-react";
+import Link from "next/link";
 
 import {
   SidebarMenu,
@@ -17,31 +18,32 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Logo } from "@/components/logo";
 import { getServerSession } from "@/lib/get-server-session";
+import { LogoutButton } from "@/components/auth-ui";
 
 const data = {
   navMain: [
     {
       title: "Home",
-      url: "#",
-      icon: <Home />,
+      url: "/dashboard",
+      icon: Home,
       isActive: true,
     },
   ],
   navSecondary: [
     {
       title: "Calendar",
-      url: "#",
-      icon: <Calendar />,
+      url: "/dashboard",
+      icon: Calendar,
     },
     {
       title: "Settings",
-      url: "#",
-      icon: <Settings2 />,
+      url: "/dashboard/settings",
+      icon: Settings2,
     },
     {
       title: "Help",
-      url: "#",
-      icon: <MessageCircleQuestion />,
+      url: "/dashboard",
+      icon: MessageCircleQuestion,
     },
   ],
   user: {
@@ -68,11 +70,11 @@ export async function SidebarLeft({
           <SidebarMenu>
             {data.navMain.map((item) => (
               <SidebarMenuItem key={item.title}>
-                <SidebarMenuButton asChild isActive={item.isActive}>
-                  <a href={item.url}>
-                    {item.icon}
+                <SidebarMenuButton isActive={item.isActive}>
+                  <Link href={item.url} className="flex items-center gap-2">
+                    <item.icon />
                     <span>{item.title}</span>
-                  </a>
+                  </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             ))}
@@ -84,11 +86,11 @@ export async function SidebarLeft({
         <SidebarMenu>
           {data.navSecondary.map((item) => (
             <SidebarMenuItem key={item.title}>
-              <SidebarMenuButton asChild>
-                <a href={item.url}>
-                  {item.icon}
+              <SidebarMenuButton>
+                <Link href={item.url} className="flex items-center gap-2">
+                  <item.icon />
                   <span>{item.title}</span>
-                </a>
+                </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
           ))}
@@ -104,8 +106,10 @@ export async function SidebarLeft({
               <span className="truncate font-medium">{user?.name}</span>
               <span className="truncate text-xs">{user?.email}</span>
             </div>
-            <Badge>Pro</Badge>
+            <Badge>{user?.isPro ? "Pro" : "Free"}</Badge>
           </SidebarMenuButton>
+
+          <LogoutButton />
         </SidebarGroup>
       </SidebarFooter>
 
