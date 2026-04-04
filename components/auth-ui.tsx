@@ -18,7 +18,7 @@ export function GoogleButton() {
 
   return (
     <Button onClick={handleGoogleLogin}>
-      {isPending ? "Loading..." : "Login with Google"}
+      {isPending ? "Loading..." : "Sign in with Google"}
     </Button>
   );
 }
@@ -28,7 +28,7 @@ export function LogoutButton() {
   const router = useRouter();
 
   const handleLogout = () => {
-    startTransition(() => {
+    startTransition(async () => {
       authClient.signOut({
         fetchOptions: {
           onSuccess: () => {

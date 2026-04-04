@@ -9,7 +9,7 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
+  provider = "postgresql"
 }
 
 model User {
@@ -23,6 +23,7 @@ model User {
   sessions      Session[]
   accounts      Account[]
   isPro         Boolean   @default(false)
+  role          String?
 
   stripeCustomerId String?
 

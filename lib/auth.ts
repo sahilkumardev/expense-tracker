@@ -1,10 +1,10 @@
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { PrismaClient } from "@/app/generated/prisma/client";
+import { nextCookies } from "better-auth/next-js";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { stripe } from "@better-auth/stripe";
 import { betterAuth } from "better-auth";
 import Stripe from "stripe";
-import { nextCookies } from "better-auth/next-js";
 
 const prisma = new PrismaClient({
   adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL }),
@@ -18,11 +18,33 @@ export const auth = betterAuth({
   database: prismaAdapter(prisma, {
     provider: "postgresql",
   }),
-  baseURL: process.env.BETTER_AUTH_URL,
   socialProviders: {
     google: {
       clientId: process.env.GOOGLE_CLIENT_ID as string,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+    },
+  },
+  emailAndPassword: {
+    enabled: true,
+    async sendResetPassword({ user, url }) {
+      // // Verify email for password reset
+      // await sendEmail({
+      //   to: user.email,
+      //   subject: "Reset your password",
+      //   text: `Click the link to reset your password: ${url}`,
+      // });
+    },
+  },
+  emailVerification: {
+    sendOnSignUp: true,
+    autoSignInAfterVerification: true,
+    async sendVerificationEmail({ user, url }) {
+      // // Verify email for new sign up
+      // await sendEmail({
+      //   to: user.email,
+      //   subject: "Verify your email",
+      //   text: `Click the link to verify your email: ${url}`,
+      // });
     },
   },
   user: {
@@ -30,6 +52,11 @@ export const auth = betterAuth({
       isPro: {
         type: "boolean",
         default: false,
+        input: false,
+      },
+      role: {
+        type: "string",
+        input: false,
       },
     },
   },
