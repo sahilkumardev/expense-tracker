@@ -23,10 +23,10 @@ export function ModeSwitcher() {
 
   return (
     <Button
-      size="icon"
-      variant="secondary"
-      className={cn("group/toggle extend-touch-target rounded-md")}
+      className={cn("group/toggle extend-touch-target")}
       onClick={toggleTheme}
+      variant="ghost"
+      size="icon-sm"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
