@@ -5,6 +5,7 @@ import {
   InputGroupAddon,
   InputGroupInput,
 } from "@/components/ui/input-group";
+import { Separator } from "@/components/ui/separator";
 
 export function PasswordInput({
   ...props
@@ -16,6 +17,10 @@ export function PasswordInput({
       <InputGroupAddon>
         <Lock />
       </InputGroupAddon>
+      <Separator
+        orientation="vertical"
+        className="ml-2 my-1 data-vertical:w-0.5 rounded-2xl"
+      />
       <InputGroupInput
         id="password"
         type={showPassword ? "text" : "password"}

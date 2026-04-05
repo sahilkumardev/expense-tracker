@@ -13,22 +13,25 @@ export default async function ResetPasswordPage({
   const { token } = await searchParams;
 
   return (
-    <main className="flex min-h-svh items-center justify-center px-4">
+    <>
       {token ? (
-        <div className="w-full space-y-6">
-          <div className="space-y-2 text-center">
+        <main className="w-full space-y-6">
+          <div className="space-y-2 text-center font-machine">
             <h1 className="text-2xl font-semibold">Reset password</h1>
             <p className="text-muted-foreground">
               Enter your new password below.
             </p>
           </div>
           <ResetPasswordForm token={token} />
-        </div>
+        </main>
       ) : (
-        <div role="alert" className="text-red-600">
+        <div
+          role="alert"
+          className="text-center font-machine text-destructive text-xl"
+        >
           Token is missing.
         </div>
       )}
-    </main>
+    </>
   );
 }

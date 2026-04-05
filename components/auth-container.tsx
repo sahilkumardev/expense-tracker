@@ -9,7 +9,7 @@ export function AuthContainer({ children }: { children: React.ReactNode }) {
         width={1000}
         src="/auth.jpg"
         alt="Background"
-        loading="lazy"
+        loading="eager"
         className="object-cover col-span-2 w-full h-screen hidden md:block"
       />
 

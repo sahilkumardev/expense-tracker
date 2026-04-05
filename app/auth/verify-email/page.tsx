@@ -1,7 +1,7 @@
-import type { Metadata } from "next";
-import { getServerSession } from "@/lib/get-server-session";
-import { redirect, unauthorized } from "next/navigation";
 import { ResendVerificationButton } from "@/components/auth-ui";
+import { getServerSession } from "@/lib/get-server-session";
+import { redirect } from "next/navigation";
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Verify Email",
@@ -10,21 +10,19 @@ export const metadata: Metadata = {
 export default async function VerifyEmailPage() {
   const { user } = await getServerSession();
 
-  if (!user) return unauthorized();
+  if (!user) return redirect("/sign-in?redirect=/auth/verify-email");
 
-  if (user.emailVerified) redirect("/dashboard");
+  if (user?.emailVerified) redirect("/dashboard");
 
   return (
-    <main className="flex flex-1 items-center justify-center px-4 text-center">
-      <div className="space-y-6">
-        <div className="space-y-2">
-          <h1 className="text-2xl font-semibold">Verify your email</h1>
-          <p className="text-muted-foreground">
-            A verification email was sent to your inbox.
-          </p>
-        </div>
-        <ResendVerificationButton email={user.email} />
+    <div className="space-y-6 text-center">
+      <div className="space-y-2">
+        <h1 className="text-2xl font-semibold">Verify your email</h1>
+        <p className="text-muted-foreground">
+          A verification email was sent to your inbox.
+        </p>
       </div>
-    </main>
+      <ResendVerificationButton email={user.email} />
+    </div>
   );
 }

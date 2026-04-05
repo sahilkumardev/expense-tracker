@@ -70,7 +70,7 @@ export function ResetPasswordForm({ token }: { token: string }) {
         )}
       />
 
-      <LoadingButton type="submit" className="w-full" loading={isPending}>
+      <LoadingButton type="submit" className="mt-5" loading={isPending}>
         Reset password
       </LoadingButton>
     </form>

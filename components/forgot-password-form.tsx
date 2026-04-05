@@ -14,6 +14,7 @@ import {
   InputGroupInput,
 } from "@/components/ui/input-group";
 import { Mail } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
 
 const forgotPasswordSchema = z.object({
   email: z.email({ message: "Please enter a valid email" }),
@@ -53,7 +54,7 @@ export function ForgotPasswordForm() {
   }
 
   return (
-    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+    <form onSubmit={form.handleSubmit(onSubmit)}>
       <Controller
         name="email"
         control={form.control}
@@ -64,6 +65,10 @@ export function ForgotPasswordForm() {
               <InputGroupAddon>
                 <Mail />
               </InputGroupAddon>
+              <Separator
+                orientation="vertical"
+                className="ml-2 my-1 data-vertical:w-0.5 rounded-2xl"
+              />
               <InputGroupInput
                 type="email"
                 id="email"
@@ -76,7 +81,7 @@ export function ForgotPasswordForm() {
           </Field>
         )}
       />
-      <LoadingButton type="submit" className="w-full" loading={isPending}>
+      <LoadingButton type="submit" className="mt-5" loading={isPending}>
         Send reset link
       </LoadingButton>
     </form>

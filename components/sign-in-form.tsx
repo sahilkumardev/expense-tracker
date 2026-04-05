@@ -1,8 +1,6 @@
 "use client";
 
 import * as React from "react";
-import { GoogleButton } from "@/components/auth-ui";
-import { ExternalLink } from "@/components/external-link";
 import { LoadingButton } from "@/components/loading-button";
 import { PasswordInput } from "@/components/password-input";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -15,7 +13,12 @@ import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 
-import { Field, FieldError, FieldLabel } from "@/components/ui/field";
+import {
+  Field,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from "@/components/ui/field";
 import {
   InputGroup,
   InputGroupAddon,
@@ -74,11 +77,8 @@ export function SignInForm() {
   }
 
   return (
-    <div>
-      <h1 className="text-3xl md:text-4xl font-medium font-mono tracking-tight mb-4">
-        Welcome back!
-      </h1>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+    <form onSubmit={form.handleSubmit(onSubmit)}>
+      <FieldGroup className="gap-4">
         <Controller
           name="email"
           control={form.control}
@@ -89,6 +89,10 @@ export function SignInForm() {
                 <InputGroupAddon>
                   <Mail />
                 </InputGroupAddon>
+                <Separator
+                  orientation="vertical"
+                  className="ml-2 my-1 data-vertical:w-0.5 rounded-2xl"
+                />
                 <InputGroupInput
                   type="email"
                   id="email"
@@ -111,11 +115,12 @@ export function SignInForm() {
                 <FieldLabel htmlFor="password">Password</FieldLabel>
                 <Link
                   href="/forgot-password"
-                  className="ml-auto inline-block text-sm underline"
+                  className="ml-auto inline-block text-sm underline text-muted-foreground hover:text-foreground/90 underline-offset-4"
                 >
                   Forgot your password?
                 </Link>
               </div>
+
               <PasswordInput
                 autoComplete="current-password"
                 placeholder="Password"
@@ -143,28 +148,10 @@ export function SignInForm() {
             </Field>
           )}
         />
-
-        <LoadingButton type="submit" className="w-full" loading={isPending}>
-          Login
-        </LoadingButton>
-      </form>
-
-      <div className="flex items-center my-6">
-        <Separator className="shrink" />
-        <span className="text-nowrap mx-3 text-sm text-muted-foreground">
-          or continue with
-        </span>
-        <Separator className="shrink" />
-      </div>
-
-      <GoogleButton />
-
-      <div className="text-center mt-5 text-muted-foreground text-sm">
-        Don&apos;t have an account?
-        <ExternalLink href="/sign-up" className="ml-1">
-          Sign up
-        </ExternalLink>
-      </div>
-    </div>
+      </FieldGroup>
+      <LoadingButton type="submit" className="mt-5" loading={isPending}>
+        Login
+      </LoadingButton>
+    </form>
   );
 }
