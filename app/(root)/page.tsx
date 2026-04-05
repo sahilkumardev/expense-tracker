@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { getServerSession } from "@/lib/get-server-session";
 import Link from "next/link";
 
-export default async function Home() {
+export default async function HomePage() {
   const { session, user } = await getServerSession();
 
   return (

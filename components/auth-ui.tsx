@@ -11,7 +11,11 @@ import React from "react";
 export function GoogleButton() {
   const [isPending, startTransition] = React.useTransition();
 
-  const handleGoogleLogin = () => {
+  const handleGoogleLogin = React.useCallback(() => {
+    if (isPending) {
+      return;
+    }
+
     startTransition(() => {
       try {
         authClient.signIn.social({
@@ -30,13 +34,14 @@ export function GoogleButton() {
         console.error("Error during Google login:", error);
       }
     });
-  };
+  }, [isPending, startTransition]);
 
   return (
     <Button
       onClick={handleGoogleLogin}
       className="w-full py-6 rounded-full font-machine tracking-wider [&_svg:not([class*='size-'])]:size-5"
       variant={"secondary"}
+      disabled={isPending}
     >
       {isPending ? (
         <span>Redirecting to Google...</span>
@@ -75,10 +80,14 @@ export function LogoutButton() {
   const [isPending, startTransition] = React.useTransition();
   const router = useRouter();
 
-  const handleLogout = () => {
+  const handleLogout = React.useCallback(() => {
+    if (isPending) {
+      return;
+    }
+
     startTransition(async () => {
       try {
-        authClient.signOut({
+        await authClient.signOut({
           fetchOptions: {
             onError: (error) => {
               console.error("Error logging out:", error);
@@ -93,10 +102,15 @@ export function LogoutButton() {
         console.error("Error logging out:", error);
       }
     });
-  };
+  }, [isPending, router, startTransition]);
 
   return (
-    <Button onClick={handleLogout} variant={"destructive"} className="mt-2">
+    <Button
+      onClick={handleLogout}
+      variant={"destructive"}
+      className="mt-2"
+      disabled={isPending}
+    >
       {isPending ? (
         <span>Logging out...</span>
       ) : (
@@ -112,9 +126,10 @@ export function LogoutButton() {
 export function ResendVerificationButton({ email }: { email: string }) {
   const [isPending, startTransition] = React.useTransition();
   const [cooldownSeconds, setCooldownSeconds] = React.useState(0);
+  const isCoolingDown = cooldownSeconds > 0;
 
   React.useEffect(() => {
-    if (cooldownSeconds <= 0) {
+    if (!isCoolingDown) {
       return;
     }
 
@@ -123,11 +138,9 @@ export function ResendVerificationButton({ email }: { email: string }) {
     }, 1000);
 
     return () => window.clearInterval(timer);
-  }, [cooldownSeconds]);
+  }, [isCoolingDown]);
 
-  const isCoolingDown = cooldownSeconds > 0;
-
-  async function resendVerificationEmail() {
+  const resendVerificationEmail = React.useCallback(async () => {
     if (isCoolingDown || isPending) {
       return;
     }
@@ -151,14 +164,14 @@ export function ResendVerificationButton({ email }: { email: string }) {
         console.error("Error sending verification email:", error);
       }
     });
-  }
+  }, [email, isCoolingDown, isPending, startTransition]);
 
   return (
     <LoadingButton
       onClick={resendVerificationEmail}
       className="w-full"
       loading={isPending}
-      disabled={isCoolingDown}
+      disabled={isCoolingDown || isPending}
     >
       {isCoolingDown
         ? `Resend verification email in ${cooldownSeconds}s`
