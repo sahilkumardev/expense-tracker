@@ -5,9 +5,9 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 
 export default async function HomePage() {
-  const { user, session } = await getServerSession();
+  const { Session } = await getServerSession();
 
-  if (user || session) {
+  if (Session) {
     return redirect("/dashboard");
   }
 

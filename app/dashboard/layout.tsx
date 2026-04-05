@@ -10,20 +10,18 @@ export default async function DashboardLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // const { user, session } = await getServerSession();
+  const { Session } = await getServerSession();
 
-  // if (!user || !session) {
-  //   return redirect("/");
-  // }
+  if (!Session) {
+    return redirect("/");
+  }
 
   return (
     <SidebarProvider>
       <SidebarLeft />
       <SidebarInset>
         <SidebarHeader />
-        <div className="flex flex-1 flex-col gap-4 p-4">
-          {children}
-        </div>
+        <div className="flex flex-1 flex-col gap-4 p-4">{children}</div>
       </SidebarInset>
       <SidebarRight />
     </SidebarProvider>

@@ -15,6 +15,7 @@ export const getServerSession = React.cache(async () => {
   const user = Session?.user;
 
   return {
+    Session,
     session,
     user,
   };

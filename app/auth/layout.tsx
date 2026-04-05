@@ -7,11 +7,15 @@ export default async function AuthLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const { user, session } = await getServerSession();
+  const { Session } = await getServerSession();
 
-  if (user || session) {
+  if (Session) {
     return redirect("/dashboard");
   }
 
-  return <AuthContainer>{children}</AuthContainer>;
+  return (
+    <AuthContainer>
+      {children}
+    </AuthContainer>
+  );
 }
