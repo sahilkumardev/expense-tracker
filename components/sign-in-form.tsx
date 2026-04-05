@@ -58,6 +58,7 @@ export function SignInForm() {
           fetchOptions: {
             onError: (error) => {
               toast.error(error.error.message);
+              console.error("Error during sign-in:", error);
             },
             onSuccess: () => {
               toast.success("Signed in successfully");
@@ -109,7 +110,7 @@ export function SignInForm() {
               <div className="flex items-center">
                 <FieldLabel htmlFor="password">Password</FieldLabel>
                 <Link
-                  href="/auth/forgot-password"
+                  href="/forgot-password"
                   className="ml-auto inline-block text-sm underline"
                 >
                   Forgot your password?

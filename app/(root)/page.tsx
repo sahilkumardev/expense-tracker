@@ -1,24 +1,23 @@
-import { GoogleButton } from "@/components/auth-ui";
-
-import { PaymentButton } from "@/components/payment-button";
+import { getServerSession } from "@/lib/get-server-session";
 import { Profile } from "@/components/profile";
 import { Button } from "@/components/ui/button";
-import { getServerSession } from "@/lib/get-server-session";
+import { redirect } from "next/navigation";
 import Link from "next/link";
 
 export default async function HomePage() {
-  const { session, user } = await getServerSession();
+  const { user, session } = await getServerSession();
+
+  if (user || session) {
+    return redirect("/dashboard");
+  }
 
   return (
     <div className="flex min-h-svh items-center justify-center gap-10">
       <Profile />
 
-      {!session && <GoogleButton />}
+      {/* {user.stripeCustomerId} */}
 
-      {user?.stripeCustomerId}
-
-      <div>Hello user, {user?.isPro ? <h1>IsPro</h1> : <PaymentButton />}</div>
-
+      {/* <div>Hello user, {user?.isPro ? <h1>IsPro</h1> : <PaymentButton />}</div> */}
       <Link href={"/dashboard"} prefetch={false}>
         <Button>Dashboard</Button>
       </Link>

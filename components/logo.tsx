@@ -1,13 +1,13 @@
 "use client";
 
-import * as React from "react";
-import { redirect } from "next/navigation";
 import { cva, type VariantProps } from "class-variance-authority";
+import { redirect } from "next/navigation";
 import { Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
+import * as React from "react";
 
 const logoVariants = cva(
-  "flex items-end w-fit gap-1.5 font-mono select-none [&_svg]:pointer-events-none [&_svg]:shrink-0",
+  "flex items-center-safe w-fit gap-1.5 select-none [&_svg]:pointer-events-none [&_svg]:shrink-0 text-2xl",
   {
     variants: {
       size: {
@@ -18,7 +18,7 @@ const logoVariants = cva(
       },
     },
     defaultVariants: {
-      size: "default",
+      size: "sm",
     },
   },
 );
@@ -34,14 +34,13 @@ export function Logo({
   }) {
   return (
     <section
-      className={cn(logoVariants({ size, className }), "font-machine")}
+      className={cn(logoVariants({ size, className }))}
       onClick={() => redirect("/")}
       {...props}
     >
-      <Sparkles className="size-4 text-primary-foreground aspect-square"  />
-      <p className={cn("flex flex-col", logoOnly ? "hidden" : "visible")}>
-        Expense
-        <span className="text-xl leading-3.5 font-semibold">Tracker</span>
+      <Sparkles className="text-primary aspect-square" />
+      <p className={cn("font-medium", logoOnly ? "hidden" : "visible")}>
+        Expense Tracker
       </p>
     </section>
   );

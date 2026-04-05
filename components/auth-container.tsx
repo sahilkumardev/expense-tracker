@@ -9,6 +9,7 @@ export function AuthContainer({ children }: { children: React.ReactNode }) {
         width={1000}
         src="/auth.jpg"
         alt="Background"
+        loading="lazy"
         className="object-cover col-span-2 w-full h-screen hidden md:block"
       />
 
@@ -16,9 +17,11 @@ export function AuthContainer({ children }: { children: React.ReactNode }) {
         <Logo />
         {children}
         <div className="flex items-center justify-between">
-          <Logo logoOnly size={"sm"} />
+          <Logo logoOnly />
 
-          <p>@Farmer Startup </p>
+          <p>
+            <span className="-mt-0.5">@</span>Expense Tracker
+          </p>
         </div>
       </section>
     </main>

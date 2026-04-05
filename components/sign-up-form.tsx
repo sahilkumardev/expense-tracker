@@ -68,6 +68,7 @@ export function SignUpForm() {
           fetchOptions: {
             onError: (error) => {
               toast.error(error.error.message);
+              console.error("Error during sign-up:", error);
             },
             onSuccess: () => {
               toast.success("Signed up successfully");

@@ -23,6 +23,7 @@ export function GoogleButton() {
           callbackURL: "/dashboard",
           fetchOptions: {
             onError: (error) => {
+              toast.error(error.error.message);
               console.error("Error during Google login:", error);
             },
             onSuccess: () => {
@@ -90,6 +91,7 @@ export function LogoutButton() {
         await authClient.signOut({
           fetchOptions: {
             onError: (error) => {
+              toast.error(error.error.message);
               console.error("Error logging out:", error);
             },
             onSuccess: () => {
@@ -152,6 +154,7 @@ export function ResendVerificationButton({ email }: { email: string }) {
           callbackURL: "/auth/email-verified",
           fetchOptions: {
             onError: (error) => {
+              toast.error(error.error.message);
               console.error("Error sending verification email:", error);
             },
             onSuccess: () => {
