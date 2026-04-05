@@ -2,6 +2,7 @@ import { prismaAdapter } from "better-auth/adapters/prisma";
 import { PrismaClient } from "@/app/generated/prisma/client";
 import { nextCookies } from "better-auth/next-js";
 import { PrismaPg } from "@prisma/adapter-pg";
+import { sendEmail } from "@/lib/send-email";
 import { stripe } from "@better-auth/stripe";
 import { betterAuth } from "better-auth";
 import Stripe from "stripe";
@@ -27,24 +28,22 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
     async sendResetPassword({ user, url }) {
-      // // Verify email for password reset
-      // await sendEmail({
-      //   to: user.email,
-      //   subject: "Reset your password",
-      //   text: `Click the link to reset your password: ${url}`,
-      // });
+      await sendEmail({
+        to: user.email,
+        subject: "Reset your password",
+        text: `Click the link to reset your password: ${url}`,
+      });
     },
   },
   emailVerification: {
     sendOnSignUp: true,
     autoSignInAfterVerification: true,
     async sendVerificationEmail({ user, url }) {
-      // // Verify email for new sign up
-      // await sendEmail({
-      //   to: user.email,
-      //   subject: "Verify your email",
-      //   text: `Click the link to verify your email: ${url}`,
-      // });
+      await sendEmail({
+        to: user.email,
+        subject: "Verify your email",
+        text: `Click the link to verify your email: ${url}`,
+      });
     },
   },
   user: {

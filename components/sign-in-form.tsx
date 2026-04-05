@@ -56,12 +56,12 @@ export function SignInForm() {
           password,
           rememberMe,
           fetchOptions: {
+            onError: (error) => {
+              toast.error(error.error.message);
+            },
             onSuccess: () => {
               toast.success("Signed in successfully");
               router.push(redirect ?? "/dashboard");
-            },
-            onError: (error) => {
-              toast.error(error.error.message);
             },
           },
         });
@@ -160,7 +160,7 @@ export function SignInForm() {
 
       <div className="text-center mt-5 text-muted-foreground text-sm">
         Don&apos;t have an account?
-        <ExternalLink href="/auth/sign-up" className="ml-1">
+        <ExternalLink href="/sign-up" className="ml-1">
           Sign up
         </ExternalLink>
       </div>

@@ -25,6 +25,7 @@ import {
   InputGroupAddon,
   InputGroupInput,
 } from "@/components/ui/input-group";
+import { useRouter } from "next/navigation";
 
 const signUpSchema = z
   .object({
@@ -44,6 +45,7 @@ type SignUpValues = z.infer<typeof signUpSchema>;
 
 export function SignUpForm() {
   const [isPending, startTransition] = React.useTransition();
+  const router = useRouter();
 
   const form = useForm<SignUpValues>({
     resolver: zodResolver(signUpSchema),
@@ -62,13 +64,14 @@ export function SignUpForm() {
           email,
           password,
           name,
-          callbackURL: "/email-verified",
+          callbackURL: "/auth/email-verified",
           fetchOptions: {
             onError: (error) => {
               toast.error(error.error.message);
             },
             onSuccess: () => {
               toast.success("Signed up successfully");
+              router.push("/dashboard");
             },
           },
         });
@@ -186,7 +189,7 @@ export function SignUpForm() {
       <div className="flex w-full justify-center border-t pt-4">
         <p className="text-muted-foreground text-center text-xs">
           Already have an account?{" "}
-          <Link href="/auth/sign-in" className="underline">
+          <Link href="/sign-in" className="underline">
             Sign in
           </Link>
         </p>
