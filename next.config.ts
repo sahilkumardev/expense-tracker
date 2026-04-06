@@ -3,6 +3,7 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   async redirects() {
     return [
+      // Auth redirects
       {
         source: "/verify-email",
         destination: "/auth/verify-email",
@@ -31,6 +32,22 @@ const nextConfig: NextConfig = {
       {
         source: "/reset-password",
         destination: "/auth/reset-password",
+        permanent: true,
+      },
+      // Dashboard redirects
+      {
+        source: "/settings",
+        destination: "/dashboard/settings",
+        permanent: true,
+      },
+      {
+        source: "/help",
+        destination: "/dashboard/help",
+        permanent: true,
+      },
+      {
+        source: "/calendar",
+        destination: "/dashboard/calendar",
         permanent: true,
       },
     ];

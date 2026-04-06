@@ -1,58 +1,16 @@
 import {
   Sidebar,
-  SidebarContent,
   SidebarFooter,
   SidebarGroup,
   SidebarHeader,
 } from "@/components/ui/sidebar";
-import {
-  Home,
-  Calendar,
-  Settings2,
-  MessageCircleQuestion,
-  Crown,
-} from "lucide-react";
-import Link from "next/link";
-
-import {
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-} from "@/components/ui/sidebar";
-
+import { Crown } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { getServerSession } from "@/lib/get-server-session";
 import { LogoutButton } from "@/components/auth-ui";
 import { Button } from "@/components/ui/button";
-
-const data = {
-  navMain: [
-    {
-      title: "Dashboard",
-      url: "/dashboard",
-      icon: Home,
-      isActive: true,
-    },
-  ],
-  navSecondary: [
-    {
-      title: "Calendar",
-      url: "/dashboard",
-      icon: Calendar,
-    },
-    {
-      title: "Settings",
-      url: "/dashboard/settings",
-      icon: Settings2,
-    },
-    {
-      title: "Help",
-      url: "/dashboard",
-      icon: MessageCircleQuestion,
-    },
-  ],
-};
+import { DashboardNavbar, HelpNavbar } from "@/components/app-sidebar-nav";
 
 export async function SidebarLeft({
   ...props
@@ -68,42 +26,10 @@ export async function SidebarLeft({
       <SidebarHeader className="h-14 border-b border-sidebar-border">
         logo
       </SidebarHeader>
-      <SidebarContent className="mt-2">
-        <SidebarGroup>
-          <SidebarMenu>
-            {data.navMain.map((item) => (
-              <SidebarMenuItem key={item.title}>
-                <SidebarMenuButton isActive={item.isActive}>
-                  <Link
-                    href={item.url}
-                    className="flex items-center gap-2 w-full"
-                  >
-                    <item.icon />
-                    <span>{item.title}</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            ))}
-          </SidebarMenu>
-        </SidebarGroup>
-      </SidebarContent>
 
+      <DashboardNavbar />
       <SidebarFooter>
-        <SidebarMenu>
-          {data.navSecondary.map((item) => (
-            <SidebarMenuItem key={item.title}>
-              <SidebarMenuButton>
-                <Link
-                  href={item.url}
-                  className="flex items-center gap-2 w-full"
-                >
-                  <item.icon />
-                  <span>{item.title}</span>
-                </Link>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          ))}
-        </SidebarMenu>
+        <HelpNavbar />
 
         <SidebarGroup className="p-0">
           <div className="overflow-hidden rounded-lg px-2.5 py-3 bg-sidebar-accent">

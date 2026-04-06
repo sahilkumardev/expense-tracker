@@ -11,7 +11,7 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from "./ui/breadcrumb";
+} from "@/components/ui/breadcrumb";
 
 function resolveBreadcrumbName(segment: string) {
   return decodeURIComponent(segment)
