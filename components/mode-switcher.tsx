@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { useTheme } from "next-themes";
+import { useTheme } from "@/components/theme-provider";
 
 import { cn } from "@/lib/utils";
 import { useMetaColor } from "@/hooks/use-meta-color";
@@ -11,11 +11,7 @@ export const DARK_MODE_FORWARD_TYPE = "dark-mode-forward";
 
 export function ModeSwitcher() {
   const { setTheme, resolvedTheme } = useTheme();
-  const { setMetaColor, metaColor } = useMetaColor();
-
-  React.useEffect(() => {
-    setMetaColor(metaColor);
-  }, [metaColor, setMetaColor]);
+  useMetaColor();
 
   const toggleTheme = React.useCallback(() => {
     setTheme(resolvedTheme === "dark" ? "light" : "dark");

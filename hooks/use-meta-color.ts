@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useTheme } from "next-themes";
+import { useTheme } from "@/components/theme-provider";
 
 export const META_THEME_COLORS = {
   light: "#ffffff",
@@ -21,8 +21,11 @@ export function useMetaColor() {
       ?.setAttribute("content", color);
   }, []);
 
+  React.useEffect(() => {
+    setMetaColor(metaColor);
+  }, [metaColor, setMetaColor]);
+
   return {
     metaColor,
-    setMetaColor,
   };
 }
