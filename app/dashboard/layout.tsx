@@ -10,11 +10,11 @@ export default async function DashboardLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const { Session } = await getServerSession();
+  // const { Session } = await getServerSession();
 
-  if (!Session) {
-    return redirect("/");
-  }
+  // if (!Session) {
+  //   return redirect("/");
+  // }
 
   return (
     <SidebarProvider>

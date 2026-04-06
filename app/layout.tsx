@@ -7,6 +7,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { Background } from "@/components/background";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "@/components/ui/sonner";
+import { NetworkProviderWrapper } from "@/components/network-provider-wrapper";
 
 export const metadata: Metadata = {
   title: "Expenses Tracker",
@@ -78,22 +79,24 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body>
-        <TooltipProvider>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="dark"
-            enableSystem
-            disableTransitionOnChange
-          >
-            <FontWrapper>
-              <MaxWidthWrapper>
-                <Background />
-                {children}
-                <Toaster richColors />
-              </MaxWidthWrapper>
-            </FontWrapper>
-          </ThemeProvider>
-        </TooltipProvider>
+        <NetworkProviderWrapper>
+          <TooltipProvider>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="dark"
+              enableSystem
+              disableTransitionOnChange
+            >
+              <FontWrapper>
+                <MaxWidthWrapper>
+                  <Background />
+                  {children}
+                  <Toaster richColors />
+                </MaxWidthWrapper>
+              </FontWrapper>
+            </ThemeProvider>
+          </TooltipProvider>
+        </NetworkProviderWrapper>
       </body>
     </html>
   );

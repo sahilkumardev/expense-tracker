@@ -14,7 +14,7 @@ export default async function SettingsPage() {
   return (
     <section>
       <h1>Settings Page</h1>
-      {user?.emailVerified && (
+      {!user?.emailVerified && (
         <div className="rounded-lg border border-yellow-200 bg-yellow-50 p-4 dark:border-yellow-800/50 dark:bg-yellow-950/30">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">

@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/breadcrumb";
 import { SidebarTrigger } from "./ui/sidebar";
 import { Separator } from "./ui/separator";
+import { Home } from "lucide-react";
 
 function resolveBreadcrumbName(segment: string) {
   return decodeURIComponent(segment)
@@ -35,6 +36,8 @@ export function SidebarHeader() {
       {breadcrumbs.length > 0 ? (
         <Breadcrumb className="text-muted-foreground">
           <BreadcrumbList>
+            <Home size={16} />
+            <BreadcrumbSeparator />
             {breadcrumbs.map((item, index) => {
               const isLast = index === breadcrumbs.length - 1;
 
