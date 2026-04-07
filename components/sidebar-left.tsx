@@ -5,12 +5,12 @@ import {
   SidebarHeader,
 } from "@/components/ui/sidebar";
 import { Crown } from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { getServerSession } from "@/lib/get-server-session";
 import { LogoutButton } from "@/components/auth-ui";
 import { Button } from "@/components/ui/button";
 import { DashboardNavbar, HelpNavbar } from "@/components/app-sidebar-nav";
+import { UserAvatar } from "@/components/user-avatar";
 
 export async function SidebarLeft({
   ...props
@@ -34,10 +34,12 @@ export async function SidebarLeft({
         <SidebarGroup className="p-0">
           <div className="overflow-hidden rounded-lg px-2.5 py-3 bg-sidebar-accent">
             <div className="flex items-center justify-between gap-1.5">
-              <Avatar className="h-8 w-8 rounded-lg">
-                <AvatarImage src={user?.image as string} alt={user?.name} />
-                <AvatarFallback className="rounded-lg">ET</AvatarFallback>
-              </Avatar>
+              <UserAvatar
+                className="h-8 w-8 rounded-lg"
+                name={user?.name as string}
+                image={user?.image}
+              />
+
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-medium">{user?.name}</span>
                 <span className="truncate text-xs text-muted-foreground">
