@@ -1,9 +1,4 @@
-import {
-  EmailForm,
-  PasswordForm,
-  ProfileDetailsForm,
-  SessionManagement,
-} from "@/components/profile-form";
+import { AccountSettingsForm } from "@/components/profile-form";
 import { Button } from "@/components/ui/button";
 import { User } from "@/lib/auth";
 import { getServerSession } from "@/lib/get-server-session";
@@ -14,8 +9,21 @@ export default async function SettingsPage() {
   const { user } = await getServerSession();
 
   return (
-    <section>
-      {user?.emailVerified && (
+    <section className="space-y-6">
+      <div className="rounded-2xl border border-border/60 bg-linear-to-r from-primary/10 via-transparent to-primary/5 p-6">
+        <p className="text-xs uppercase tracking-widest text-muted-foreground">
+          Preferences
+        </p>
+        <h1 className="mt-2 text-2xl font-semibold tracking-tight">
+          Account Settings
+        </h1>
+        <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
+          Control how your profile appears, secure your account, and review
+          active sessions.
+        </p>
+      </div>
+
+      {!user?.emailVerified && (
         <div className="rounded-lg border border-yellow-200 bg-yellow-50 p-4 dark:border-yellow-800/50 dark:bg-yellow-950/30">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -31,21 +39,7 @@ export default async function SettingsPage() {
         </div>
       )}
 
-      <ProfileDetailsForm user={user as User} />
-
-      <PasswordForm />
-      <EmailForm currentEmail={user?.email as string} />
-
-      <div>
-        {/* Session Management */}
-
-        <h2 className="text-lg font-medium mb-4">Session Management</h2>
-        <p className="text-sm text-muted-foreground mb-4">
-          Manage your active sessions and sign out from other devices.
-        </p>
-
-        <SessionManagement />
-      </div>
+      <AccountSettingsForm user={user as User} />
     </section>
   );
 }

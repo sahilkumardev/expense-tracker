@@ -3,6 +3,7 @@ import { Eye, EyeOff, Lock } from "lucide-react";
 import {
   InputGroup,
   InputGroupAddon,
+  InputGroupButton,
   InputGroupInput,
 } from "@/components/ui/input-group";
 import { Separator } from "@/components/ui/separator";
@@ -26,16 +27,19 @@ export function PasswordInput({
         type={showPassword ? "text" : "password"}
         {...props}
       />
-      <InputGroupAddon
-        align="inline-end"
-        className="cursor-default"
-        onClick={() => setShowPassword(!showPassword)}
-      >
-        {showPassword ? (
-          <EyeOff className="w-4 h-4" />
-        ) : (
-          <Eye className="w-4 h-4" />
-        )}
+      <InputGroupAddon align="inline-end">
+        <InputGroupButton
+          aria-label={showPassword ? "Hide password" : "Show password"}
+          onClick={() => setShowPassword((state) => !state)}
+          size="icon-xs"
+          className="rounded-full"
+        >
+          {showPassword ? (
+            <EyeOff className="w-4 h-4" />
+          ) : (
+            <Eye className="w-4 h-4" />
+          )}
+        </InputGroupButton>
       </InputGroupAddon>
     </InputGroup>
   );

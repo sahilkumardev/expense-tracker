@@ -20,12 +20,11 @@ export function UserAvatar({
     .join("");
 
   return (
-    <Avatar className={cn(className)} {...props}>
-      <AvatarImage
-        src={image as string}
-        alt={name}
-        className="aspect-square object-cover"
-      />
+    <Avatar
+      className={cn("rounded-full overflow-hidden", className)}
+      {...props}
+    >
+      <AvatarImage src={image as string} alt={name} />
       <AvatarFallback className="rounded-lg">{initials || "ET"}</AvatarFallback>
     </Avatar>
   );

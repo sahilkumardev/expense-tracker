@@ -2,396 +2,384 @@
 
 import { LoadingButton } from "@/components/loading-button";
 import { Button } from "@/components/ui/button";
-import { User } from "@/lib/auth";
-import { authClient } from "@/lib/auth-client";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Mail, User as UserIcon, XIcon } from "lucide-react";
-import { useRouter } from "next/navigation";
-import React from "react";
-import { Controller, useForm } from "react-hook-form";
-import { toast } from "sonner";
-import { z } from "zod";
-import { Separator } from "@/components/ui/separator";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
-
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupInput,
 } from "@/components/ui/input-group";
-import { UserAvatar } from "@/components/user-avatar";
 import { PasswordInput } from "@/components/password-input";
+import { Separator } from "@/components/ui/separator";
+import { UserAvatar } from "@/components/user-avatar";
+import { User } from "@/lib/auth";
+import { authClient } from "@/lib/auth-client";
 import { passwordSchema } from "@/lib/validation";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Mail, ShieldCheck, User as UserIcon, XIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
+import React from "react";
+import { Controller, useForm, useWatch } from "react-hook-form";
+import { toast } from "sonner";
+import { z } from "zod";
 
-const updateProfileSchema = z.object({
-  name: z.string().trim().min(1, { message: "Name is required" }),
-  image: z.string().optional().nullable(),
-});
+const accountSettingsSchema = z
+  .object({
+    name: z.string().trim().min(1, { message: "Name is required" }),
+    image: z.string().nullable().optional(),
+    newEmail: z.string().trim().email({ message: "Enter a valid email" }),
+    currentPassword: z.string(),
+    newPassword: z.string(),
+  })
+  .superRefine((values, ctx) => {
+    const hasNewPassword = values.newPassword.trim().length > 0;
+    const hasCurrentPassword = values.currentPassword.trim().length > 0;
 
-export type UpdateProfileValues = z.infer<typeof updateProfileSchema>;
+    if (hasNewPassword && !hasCurrentPassword) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["currentPassword"],
+        message: "Current password is required",
+      });
+      return;
+    }
 
-const updatePasswordSchema = z.object({
-  currentPassword: z
-    .string()
-    .min(1, { message: "Current password is required" }),
-  newPassword: passwordSchema,
-});
+    if (hasNewPassword) {
+      const parsedPassword = passwordSchema.safeParse(values.newPassword);
+      if (!parsedPassword.success) {
+        for (const issue of parsedPassword.error.issues) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            path: ["newPassword"],
+            message: issue.message,
+          });
+        }
+      }
+    }
+  });
 
-type UpdatePasswordValues = z.infer<typeof updatePasswordSchema>;
+type AccountSettingsValues = z.infer<typeof accountSettingsSchema>;
 
-function useImagePreview(
-  form: ReturnType<typeof useForm<UpdateProfileValues>>,
-) {
-  return form.watch("image");
+interface AccountSettingsFormProps {
+  user: User;
 }
 
-export function ProfileDetailsForm({ user }: { user: User }) {
-  const [isPending, startTransition] = React.useTransition();
+export function AccountSettingsForm({ user }: AccountSettingsFormProps) {
   const router = useRouter();
+  const [isPending, startTransition] = React.useTransition();
 
-  const form = useForm<UpdateProfileValues>({
-    resolver: zodResolver(updateProfileSchema),
+  const form = useForm<AccountSettingsValues>({
+    resolver: zodResolver(accountSettingsSchema),
     defaultValues: {
       name: user.name ?? "",
       image: user.image ?? null,
-    },
-  });
-
-  async function onSubmit({ name, image }: UpdateProfileValues) {
-    startTransition(async () => {
-      try {
-        await authClient.updateUser({
-          name,
-          image,
-          fetchOptions: {
-            onError(error) {
-              console.error("Failed to update profile", error);
-              toast.error(error.error.message);
-            },
-            onSuccess() {
-              toast.success("Profile updated");
-              router.refresh();
-            },
-          },
-        });
-      } catch (error) {
-        console.error("Failed to update profile", error);
-      }
-    });
-  }
-
-  function handleImageChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const base64 = reader.result as string;
-        form.setValue("image", base64, { shouldDirty: true });
-      };
-      reader.readAsDataURL(file);
-    }
-  }
-
-  const imagePreview = useImagePreview(form);
-
-  return (
-    <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4">
-      <Controller
-        name="name"
-        control={form.control}
-        render={({ field, fieldState }) => (
-          <Field data-invalid={fieldState.invalid}>
-            <FieldLabel htmlFor="name">Name</FieldLabel>
-            <InputGroup>
-              <InputGroupAddon>
-                <UserIcon />
-              </InputGroupAddon>
-              <Separator
-                orientation="vertical"
-                className="ml-2 my-1 data-vertical:w-0.5 rounded-2xl"
-              />
-              <InputGroupInput
-                type="text"
-                id="name"
-                aria-invalid={fieldState.invalid}
-                placeholder="Full name"
-                {...field}
-              />
-            </InputGroup>
-            <FieldError>{fieldState.error?.message}</FieldError>
-          </Field>
-        )}
-      />
-
-      <Controller
-        name="name"
-        control={form.control}
-        render={({ field, fieldState }) => (
-          <Field data-invalid={fieldState.invalid}>
-            <FieldLabel htmlFor="name">Name</FieldLabel>
-            <InputGroup>
-              <InputGroupAddon>
-                <UserIcon />
-              </InputGroupAddon>
-              <Separator
-                orientation="vertical"
-                className="ml-2 my-1 data-vertical:w-0.5 rounded-2xl"
-              />
-              <InputGroupInput
-                type="text"
-                id="name"
-                aria-invalid={fieldState.invalid}
-                placeholder="Full name"
-                {...field}
-              />
-            </InputGroup>
-            <FieldError>{fieldState.error?.message}</FieldError>
-          </Field>
-        )}
-      />
-
-      <Controller
-        name="image"
-        control={form.control}
-        render={({ fieldState }) => (
-          <Field data-invalid={fieldState.invalid}>
-            <FieldLabel htmlFor="image">Profile image</FieldLabel>
-            <InputGroup>
-              <InputGroupAddon>
-                <UserIcon />
-              </InputGroupAddon>
-              <Separator
-                orientation="vertical"
-                className="ml-2 my-1 data-vertical:w-0.5 rounded-2xl"
-              />
-              <InputGroupInput
-                type="file"
-                accept="image/*"
-                id="image"
-                aria-invalid={fieldState.invalid}
-                placeholder="Select an image"
-                onChange={(e) => handleImageChange(e)}
-              />
-            </InputGroup>
-            <FieldError>{fieldState.error?.message}</FieldError>
-          </Field>
-        )}
-      />
-
-      {imagePreview && (
-        <div className="relative size-16">
-          <UserAvatar
-            className="size-16"
-            name={user.name}
-            image={imagePreview}
-          />
-          <Button
-            type="button"
-            variant="ghost"
-            className="absolute -top-2 -right-2 size-6 rounded-full"
-            onClick={() => form.setValue("image", null)}
-            aria-label="Remove image"
-          >
-            <XIcon className="size-4" />
-          </Button>
-        </div>
-      )}
-
-      <LoadingButton type="submit" loading={isPending}>
-        Save changes
-      </LoadingButton>
-    </form>
-  );
-}
-
-export function PasswordForm() {
-  const [isPending, startTransition] = React.useTransition();
-
-  const form = useForm<UpdatePasswordValues>({
-    resolver: zodResolver(updatePasswordSchema),
-    defaultValues: {
+      newEmail: user.email,
       currentPassword: "",
       newPassword: "",
     },
   });
 
-  async function onSubmit({
-    currentPassword,
-    newPassword,
-  }: UpdatePasswordValues) {
-    startTransition(async () => {
-      try {
-        await authClient.changePassword({
-          currentPassword,
-          newPassword,
-          revokeOtherSessions: true,
-        });
-      } catch (error) {
-        console.error("Failed to change password", error);
-        toast.error("Failed to change password");
-      }
-    });
-  }
-
-  return (
-    <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4">
-      <Controller
-        name="currentPassword"
-        control={form.control}
-        render={({ field, fieldState }) => (
-          <Field data-invalid={fieldState.invalid}>
-            <FieldLabel htmlFor="password">Current Password</FieldLabel>
-            <PasswordInput
-              {...field}
-              placeholder="Current password"
-              autoComplete="current-password"
-            />
-            <FieldError>{fieldState.error?.message}</FieldError>
-          </Field>
-        )}
-      />
-
-      <Controller
-        name="newPassword"
-        control={form.control}
-        render={({ field, fieldState }) => (
-          <Field data-invalid={fieldState.invalid}>
-            <FieldLabel htmlFor="password">New Password</FieldLabel>
-            <PasswordInput
-              autoComplete="new-password"
-              placeholder="New password"
-              {...field}
-            />
-            <FieldError>{fieldState.error?.message}</FieldError>
-          </Field>
-        )}
-      />
-
-      <LoadingButton type="submit" loading={isPending}>
-        Change password
-      </LoadingButton>
-    </form>
-  );
-}
-
-export const updateEmailSchema = z.object({
-  newEmail: z.email({ message: "Enter a valid email" }),
-});
-
-export type UpdateEmailValues = z.infer<typeof updateEmailSchema>;
-
-interface EmailFormProps {
-  currentEmail: string;
-}
-
-export function EmailForm({ currentEmail }: EmailFormProps) {
-  const [isPending, startTransition] = React.useTransition();
-
-  const form = useForm<UpdateEmailValues>({
-    resolver: zodResolver(updateEmailSchema),
-    defaultValues: {
-      newEmail: currentEmail,
-    },
+  const imagePreview = useWatch({
+    control: form.control,
+    name: "image",
   });
 
-  async function onSubmit({ newEmail }: UpdateEmailValues) {
-    startTransition(async () => {
-      try {
-        await authClient.changeEmail({
-          newEmail,
-          callbackURL: "/email-verified",
+  const watchedName = useWatch({
+    control: form.control,
+    name: "name",
+  });
+
+  const watchedEmail = useWatch({
+    control: form.control,
+    name: "newEmail",
+  });
+
+  const watchedCurrentPassword = useWatch({
+    control: form.control,
+    name: "currentPassword",
+  });
+
+  const watchedNewPassword = useWatch({
+    control: form.control,
+    name: "newPassword",
+  });
+
+  const hasProfileChanges =
+    watchedName.trim() !== (user.name ?? "") ||
+    imagePreview !== (user.image ?? null);
+  const hasEmailChanges = watchedEmail.trim() !== user.email;
+  const hasPasswordChanges =
+    watchedCurrentPassword.trim().length > 0 &&
+    watchedNewPassword.trim().length > 0;
+  const canSubmit = hasProfileChanges || hasEmailChanges || hasPasswordChanges;
+
+  const handleImageChange = React.useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      const file = event.target.files?.[0];
+      if (!file) {
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        form.setValue("image", reader.result as string, {
+          shouldDirty: true,
+          shouldTouch: true,
         });
-      } catch (error) {
-        console.error("Failed to request email change", error);
-        toast.error("Failed to request email change");
-      }
-    });
-  }
-
-  return (
-    <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4">
-      <Controller
-        name="newEmail"
-        control={form.control}
-        render={({ field, fieldState }) => (
-          <Field data-invalid={fieldState.invalid}>
-            <FieldLabel htmlFor="new-email">New Email</FieldLabel>
-            <InputGroup>
-              <InputGroupAddon>
-                <Mail />
-              </InputGroupAddon>
-              <Separator
-                orientation="vertical"
-                className="ml-2 my-1 data-vertical:w-0.5 rounded-2xl"
-              />
-              <InputGroupInput
-                type="email"
-                id="new-email"
-                aria-invalid={fieldState.invalid}
-                placeholder="expense@tracker.com"
-                {...field}
-              />
-            </InputGroup>
-            <FieldError>{fieldState.error?.message}</FieldError>
-          </Field>
-        )}
-      />
-
-      <LoadingButton type="submit" loading={isPending}>
-        Request change
-      </LoadingButton>
-    </form>
+      };
+      reader.readAsDataURL(file);
+    },
+    [form],
   );
-}
 
-export function SessionManagement() {
-  type Session = NonNullable<
-    Awaited<ReturnType<typeof authClient.listSessions>>["data"]
-  >[number];
-
-  const [isPending, startTransition] = React.useTransition();
-  const [sessions, setSessions] = React.useState<Session[]>([]);
-
-  React.useEffect(() => {
-    startTransition(async () => {
-      try {
-        const session = await authClient.listSessions();
-        setSessions(session.data || []);
-      } catch (error) {
-        console.error("Failed to fetch sessions", error);
-      }
+  const removeImage = React.useCallback(() => {
+    form.setValue("image", null, {
+      shouldDirty: true,
+      shouldTouch: true,
     });
-  }, []);
+  }, [form]);
+
+  const onSubmit = React.useCallback(
+    async (values: AccountSettingsValues) => {
+      startTransition(async () => {
+        try {
+          const trimmedName = values.name.trim();
+          const trimmedEmail = values.newEmail.trim();
+          const profileChanged =
+            trimmedName !== (user.name ?? "") ||
+            values.image !== (user.image ?? null);
+          const emailChanged = trimmedEmail !== user.email;
+          const passwordChanged =
+            values.currentPassword.trim().length > 0 &&
+            values.newPassword.trim().length > 0;
+
+          if (!profileChanged && !emailChanged && !passwordChanged) {
+            toast.info("No changes to save");
+            return;
+          }
+
+          if (profileChanged) {
+            await authClient.updateUser({
+              name: trimmedName,
+              image: values.image,
+            });
+          }
+
+          if (emailChanged) {
+            await authClient.changeEmail({
+              newEmail: trimmedEmail,
+              callbackURL: "/email-verified",
+            });
+          }
+
+          if (passwordChanged) {
+            await authClient.changePassword({
+              currentPassword: values.currentPassword,
+              newPassword: values.newPassword,
+              revokeOtherSessions: true,
+            });
+          }
+
+          toast.success(
+            emailChanged
+              ? "Settings saved. Verify your new email from your inbox."
+              : "Settings saved",
+          );
+
+          form.reset({
+            name: trimmedName,
+            image: values.image,
+            newEmail: trimmedEmail,
+            currentPassword: "",
+            newPassword: "",
+          });
+
+          router.refresh();
+        } catch (error) {
+          console.error("Failed to save settings", error);
+          toast.error("Failed to save settings");
+        }
+      });
+    },
+    [form, router, startTransition, user.email, user.image, user.name],
+  );
 
   return (
-    <React.Suspense fallback={isPending ? "Loading sessions..." : null}>
-      {sessions.length > 0 ? (
-        <div className="space-y-3">
-          {sessions.map((session) => (
-            <div
-              key={session.id}
-              className="rounded-lg border p-3 text-sm space-y-1"
-            >
-              <p className="font-medium">
-                {session.userAgent || "Unknown device"}
+    <Card className="border-border/60 bg-linear-to-b from-card via-card to-muted/20">
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2 text-xl">
+          <ShieldCheck className="size-5 text-primary" />
+          Account Settings
+        </CardTitle>
+        <CardDescription>
+          Update your identity, email, and password from one secure place.
+        </CardDescription>
+      </CardHeader>
+
+      <CardContent>
+        <form
+          className="grid gap-6 md:grid-cols-[1fr_155px]"
+          id="account-settings-form"
+          onSubmit={form.handleSubmit(onSubmit)}
+        >
+          <div className="grid gap-4 md:grid-cols-2 ">
+            <Controller
+              name="name"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor="name">Full Name</FieldLabel>
+                  <InputGroup>
+                    <InputGroupAddon>
+                      <UserIcon />
+                    </InputGroupAddon>
+                    <Separator
+                      orientation="vertical"
+                      className="my-1 ml-2 rounded-2xl data-vertical:w-0.5"
+                    />
+                    <InputGroupInput
+                      type="text"
+                      id="name"
+                      aria-invalid={fieldState.invalid}
+                      placeholder="John Doe"
+                      {...field}
+                    />
+                  </InputGroup>
+                  <FieldError>{fieldState.error?.message}</FieldError>
+                </Field>
+              )}
+            />
+
+            <Controller
+              name="newEmail"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor="new-email">Email Address</FieldLabel>
+                  <InputGroup>
+                    <InputGroupAddon>
+                      <Mail />
+                    </InputGroupAddon>
+                    <Separator
+                      orientation="vertical"
+                      className="my-1 ml-2 rounded-2xl data-vertical:w-0.5"
+                    />
+                    <InputGroupInput
+                      type="email"
+                      id="new-email"
+                      aria-invalid={fieldState.invalid}
+                      placeholder="expense@tracker.com"
+                      {...field}
+                    />
+                  </InputGroup>
+                  <FieldError>{fieldState.error?.message}</FieldError>
+                </Field>
+              )}
+            />
+
+            <Controller
+              name="currentPassword"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor="current-password">
+                    Current Password
+                  </FieldLabel>
+                  <PasswordInput
+                    {...field}
+                    id="current-password"
+                    placeholder="Current password"
+                  />
+                  <FieldError>{fieldState.error?.message}</FieldError>
+                </Field>
+              )}
+            />
+
+            <Controller
+              name="newPassword"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor="new-password">New Password</FieldLabel>
+                  <PasswordInput
+                    {...field}
+                    id="new-password"
+                    placeholder="New password"
+                    autoComplete="new-password"
+                  />
+                  <FieldError>{fieldState.error?.message}</FieldError>
+                </Field>
+              )}
+            />
+            <div className="col-span-2">
+              <p className="text-xs text-muted-foreground mb-1">
+                Note :- Saving password changes signs out other devices
+                automatically.
               </p>
-              <p className="text-muted-foreground">
-                IP: {session.ipAddress || "Unknown"}
-              </p>
-              <p className="text-muted-foreground">
-                Created: {new Date(session.createdAt).toLocaleString()}
-              </p>
-              <p className="text-muted-foreground">
-                Expires: {new Date(session.expiresAt).toLocaleString()}
-              </p>
+              <LoadingButton
+                type="submit"
+                form="account-settings-form"
+                loading={isPending}
+                disabled={!canSubmit}
+              >
+                Save Changes
+              </LoadingButton>
             </div>
-          ))}
-        </div>
-      ) : (
-        <p className="text-sm text-muted-foreground">
-          No active sessions found.
-        </p>
-      )}
-    </React.Suspense>
+          </div>
+          <div className="grid grid-cols-1 content-between">
+            <div>
+              <FieldLabel htmlFor="image" className="mb-1">
+                Profile Photo
+              </FieldLabel>
+              <div className="relative flex">
+                <UserAvatar
+                  className="h-full w-full mb- ring-2 ring-primary/30 rounded size-38"
+                  name={watchedName || user.name || "User"}
+                  image={imagePreview}
+                />
+                {imagePreview && (
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    size="icon"
+                    className="absolute -right-2 -top-2 size-7 rounded-full"
+                    onClick={removeImage}
+                    aria-label="Remove image"
+                  >
+                    <XIcon className="size-4" />
+                  </Button>
+                )}
+              </div>
+            </div>
+            <Controller
+              name="image"
+              control={form.control}
+              render={({ fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <InputGroup className="relative justify-center">
+                    Update Image
+                    <InputGroupInput
+                      type="file"
+                      accept="image/*"
+                      className="opacity-0 absolute inset-0 cursor-pointer"
+                      aria-invalid={fieldState.invalid}
+                      onChange={handleImageChange}
+                    />
+                  </InputGroup>
+
+                  <FieldError>{fieldState.error?.message}</FieldError>
+                </Field>
+              )}
+            />
+          </div>
+        </form>
+      </CardContent>
+    </Card>
   );
 }
