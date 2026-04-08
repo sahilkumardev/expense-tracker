@@ -1,12 +1,15 @@
 import { AccountSettingsForm } from "@/components/profile-form";
 import { Button } from "@/components/ui/button";
-import { User } from "@/lib/auth";
 import { getServerSession } from "@/lib/get-server-session";
 import { MailIcon } from "lucide-react";
 import Link from "next/link";
 
 export default async function SettingsPage() {
   const { user } = await getServerSession();
+
+  if (!user?.id) {
+    return null;
+  }
 
   return (
     <section className="space-y-6">
@@ -39,7 +42,7 @@ export default async function SettingsPage() {
         </div>
       )}
 
-      <AccountSettingsForm user={user as User} />
+      <AccountSettingsForm user={user} />
     </section>
   );
 }

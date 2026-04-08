@@ -153,6 +153,7 @@ function Sidebar({
   variant = "sidebar",
   collapsible = "offcanvas",
   className,
+  style,
   children,
   dir,
   ...props
@@ -167,6 +168,7 @@ function Sidebar({
     return (
       <div
         data-slot="sidebar"
+        style={style}
         className={cn(
           "flex h-full w-(--sidebar-width) flex-col bg-sidebar text-sidebar-foreground",
           className,
@@ -186,12 +188,13 @@ function Sidebar({
           data-sidebar="sidebar"
           data-slot="sidebar"
           data-mobile="true"
-          className="w-(--sidebar-width) bg-sidebar p-0 text-sidebar-foreground [&>button]:hidden"
           style={
             {
               "--sidebar-width": SIDEBAR_WIDTH_MOBILE,
+              ...style,
             } as React.CSSProperties
           }
+          className="w-(--sidebar-width) bg-sidebar p-0 text-sidebar-foreground [&>button]:hidden"
           side={side}
         >
           <SheetHeader className="sr-only">
@@ -206,7 +209,13 @@ function Sidebar({
 
   return (
     <div
-      className="group peer hidden text-sidebar-foreground md:block"
+      style={
+        {
+          "--sidebar-width": SIDEBAR_WIDTH,
+          ...style,
+        } as React.CSSProperties
+      }
+      className={cn("group peer hidden text-sidebar-foreground md:flex")}
       data-state={state}
       data-collapsible={state === "collapsed" ? collapsible : ""}
       data-variant={variant}

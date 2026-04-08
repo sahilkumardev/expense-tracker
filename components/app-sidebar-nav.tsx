@@ -1,6 +1,12 @@
 "use client";
 
-import { Calendar, Home, MessageCircleQuestion, Settings2 } from "lucide-react";
+import {
+  Calendar,
+  Home,
+  MessageCircleQuestion,
+  ReceiptText,
+  Settings2,
+} from "lucide-react";
 import { SidebarContent, SidebarGroup } from "@/components/ui/sidebar";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
@@ -53,6 +59,11 @@ function DashboardNavbar() {
       title: "Dashboard",
       url: "/dashboard",
       icon: Home,
+    },
+    {
+      title: "Transactions",
+      url: "/dashboard/transactions",
+      icon: ReceiptText,
     },
   ];
 
