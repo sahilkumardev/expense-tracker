@@ -11,7 +11,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { ShoppingBag, Trash2 } from "lucide-react";
+import { Car, ShoppingBag, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { Category } from "@/app/generated/prisma/browser";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -25,13 +25,15 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { LoadingButton } from "@/components/loading-button";
 import { z } from "zod";
+import { Button } from "./ui/button";
+import { ButtonGroup } from "@/components/ui/button-group";
 
 const categorySchema = z.object({
   name: z
     .string()
     .trim()
-    .min(2, { message: "Category name must be between 2 and 60 characters" })
-    .max(60, { message: "Category name must be between 2 and 60 characters" }),
+    .min(2, { message: "*Category name must be at least 2 characters" })
+    .max(20, { message: "*Category name must be at most 20 characters" }),
 });
 
 type CategoryValues = z.infer<typeof categorySchema>;
@@ -132,7 +134,7 @@ export function Categories({
               <Field data-invalid={fieldState.invalid}>
                 <FieldLabel htmlFor="categories">
                   Add Categories
-                  <span className="ml-1">*{fieldState.error?.message}</span>
+                  <span className="ml-1">{fieldState.error?.message}</span>
                 </FieldLabel>
                 <InputGroup>
                   <InputGroupAddon>
@@ -175,23 +177,30 @@ export function Categories({
             <p className="text-sm text-muted-foreground">No categories yet.</p>
           </CardFooter>
         ) : (
-          <CardFooter className="grid grid-cols-4 gap-4">
+          <CardFooter className="flex gap-4 flex-wrap">
             {categories.map((cat) => (
-              <div
-                key={cat.id}
-                className="inline-flex items-center gap-1 rounded-full border px-2 py-1"
-              >
-                <Badge variant="outline">{cat.name}</Badge>
-                <button
-                  type="button"
+              <ButtonGroup key={cat.id} className="">
+                <Badge className="py-1.5 h-8 px-3" variant="outline">
+                  <Car />
+                  <Separator
+                    orientation="vertical"
+                    className="mx-1 data-vertical:w-0.5 rounded-2xl"
+                  />
+                  <span className="capitalize tracking-wider font-medium">
+                    {cat.name}
+                  </span>
+                </Badge>
+                <Button
                   aria-label={`Delete ${cat.name}`}
                   onClick={() => deleteCategory(cat.id)}
                   disabled={isPending}
-                  className="rounded-full p-1 hover:bg-muted disabled:opacity-50"
+                  size="icon-sm"
+                  variant="outline"
+                  className="bg-red-500/80 hover:bg-red-500/60"
                 >
-                  <Trash2 className="size-3" />
-                </button>
-              </div>
+                  <Trash2 />
+                </Button>
+              </ButtonGroup>
             ))}
           </CardFooter>
         )}
