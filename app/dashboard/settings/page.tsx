@@ -1,8 +1,12 @@
+import { Categories } from "@/components/categories";
 import { AccountSettingsForm } from "@/components/profile-form";
 import { Button } from "@/components/ui/button";
 import { getServerSession } from "@/lib/get-server-session";
 import { MailIcon } from "lucide-react";
 import Link from "next/link";
+
+import { getCategories } from "@/lib/categories";
+// import { Categories } from "@/components/categories";
 
 export default async function SettingsPage() {
   const { user } = await getServerSession();
@@ -10,6 +14,8 @@ export default async function SettingsPage() {
   if (!user?.id) {
     return null;
   }
+
+  const categories = getCategories();
 
   return (
     <section className="space-y-6">
@@ -43,6 +49,7 @@ export default async function SettingsPage() {
       )}
 
       <AccountSettingsForm user={user} />
+      <Categories categoriesPromise={categories} />
     </section>
   );
 }

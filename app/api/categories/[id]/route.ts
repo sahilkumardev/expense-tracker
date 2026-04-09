@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { getServerSession } from "@/lib/get-server-session";
+import { NextResponse } from "next/server";
 
 export async function DELETE(
   _req: Request,
@@ -9,7 +10,7 @@ export async function DELETE(
     const { user } = await getServerSession();
 
     if (!user?.id) {
-      return Response.json({ error: "Unauthorized" }, { status: 401 });
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const { id } = await params;
@@ -20,7 +21,10 @@ export async function DELETE(
     });
 
     if (!category) {
-      return Response.json({ error: "Category not found" }, { status: 404 });
+      return NextResponse.json(
+        { error: "Category not found" },
+        { status: 404 },
+      );
     }
 
     await prisma.transaction.updateMany({
@@ -32,10 +36,10 @@ export async function DELETE(
       where: { id },
     });
 
-    return Response.json({ success: true });
+    return NextResponse.json({ success: true });
   } catch (error) {
     console.error("Failed to delete category", error);
-    return Response.json(
+    return NextResponse.json(
       { error: "Failed to delete category" },
       { status: 500 },
     );

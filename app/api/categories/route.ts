@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { getServerSession } from "@/lib/get-server-session";
 import { z } from "zod";
+import { NextResponse } from "next/server";
 
 const createCategorySchema = z.object({
   name: z.string().trim().min(2).max(60),
@@ -11,7 +12,7 @@ export async function GET() {
     const { user } = await getServerSession();
 
     if (!user?.id) {
-      return Response.json({ error: "Unauthorized" }, { status: 401 });
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const categories = await prisma.category.findMany({
@@ -19,10 +20,10 @@ export async function GET() {
       orderBy: { name: "asc" },
     });
 
-    return Response.json({ data: categories });
+    return NextResponse.json({ data: categories });
   } catch (error) {
     console.error("Failed to fetch categories", error);
-    return Response.json(
+    return NextResponse.json(
       { error: "Failed to fetch categories" },
       { status: 500 },
     );
@@ -32,15 +33,16 @@ export async function GET() {
 export async function POST(req: Request) {
   try {
     const { user } = await getServerSession();
+
+    if (!user?.id) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     const body = (await req.json()) as unknown;
     const parsed = createCategorySchema.safeParse(body);
 
-    if (!user?.id) {
-      return Response.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
     if (!parsed.success) {
-      return Response.json(
+      return NextResponse.json(
         { error: "Invalid request body", issues: parsed.error.issues },
         { status: 400 },
       );
@@ -53,7 +55,7 @@ export async function POST(req: Request) {
       },
     });
 
-    return Response.json(category, { status: 201 });
+    return NextResponse.json(category, { status: 201 });
   } catch (error) {
     if (
       error &&
@@ -61,14 +63,14 @@ export async function POST(req: Request) {
       "code" in error &&
       (error as { code?: string }).code === "P2002"
     ) {
-      return Response.json(
+      return NextResponse.json(
         { error: "Category already exists" },
         { status: 409 },
       );
     }
 
     console.error("Failed to create category", error);
-    return Response.json(
+    return NextResponse.json(
       { error: "Failed to create category" },
       { status: 500 },
     );
