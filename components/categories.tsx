@@ -11,7 +11,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Car, ShoppingBag, Trash2 } from "lucide-react";
+import { Car, ChartColumnStacked, ShoppingBag, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { Category } from "@/app/generated/prisma/browser";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -120,7 +120,10 @@ export function Categories({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Manage Categories</CardTitle>
+        <CardTitle className="flex items-center gap-2 text-xl">
+          <ChartColumnStacked className="size-5 text-primary" />
+          Manage Categories
+        </CardTitle>
         <CardDescription>
           Create and clean up custom categories used while adding transactions.
         </CardDescription>
