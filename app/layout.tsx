@@ -2,12 +2,13 @@ import "@/styles/globals.css";
 
 import type { Metadata } from "next";
 import { MaxWidthWrapper } from "@/components/max-with-wrapper";
-import { FontWrapper } from "@/components/font-wrapper";
+import { FontWrapper, inter, machine } from "@/components/font-wrapper";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Background } from "@/components/background";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "@/components/ui/sonner";
 import { NetworkProviderWrapper } from "@/components/network-provider-wrapper";
+import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = {
   title: "Expenses Tracker",
@@ -77,26 +78,30 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html
+      lang="en"
+      suppressHydrationWarning
+      className={cn(inter.variable, machine.variable)}
+    >
       <body>
-        <NetworkProviderWrapper>
-          <TooltipProvider>
-            <ThemeProvider
-              attribute="class"
-              defaultTheme="dark"
-              enableSystem
-              disableTransitionOnChange
-            >
-              <FontWrapper>
+        <FontWrapper>
+          <NetworkProviderWrapper>
+            <TooltipProvider>
+              <ThemeProvider
+                attribute="class"
+                defaultTheme="dark"
+                enableSystem
+                disableTransitionOnChange
+              >
                 <MaxWidthWrapper>
                   <Background />
                   {children}
                   <Toaster richColors />
                 </MaxWidthWrapper>
-              </FontWrapper>
-            </ThemeProvider>
-          </TooltipProvider>
-        </NetworkProviderWrapper>
+              </ThemeProvider>
+            </TooltipProvider>
+          </NetworkProviderWrapper>
+        </FontWrapper>
       </body>
     </html>
   );

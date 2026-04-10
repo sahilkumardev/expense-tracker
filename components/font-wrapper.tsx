@@ -21,10 +21,7 @@ const machine = localFont({
   variable: "--font-machine",
 });
 
-export function FontWrapper({
-  children,
-  className,
-}: React.ComponentProps<"div">) {
+function FontWrapper({ children, className }: React.ComponentProps<"div">) {
   return (
     <div
       className={cn(
@@ -38,3 +35,5 @@ export function FontWrapper({
     </div>
   );
 }
+
+export { FontWrapper, inter, machine };
