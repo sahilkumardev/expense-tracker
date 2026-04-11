@@ -1,7 +1,7 @@
 "use client";
 
 import {
-  Calendar,
+  BarChart3,
   Home,
   MessageCircleQuestion,
   ReceiptText,
@@ -65,6 +65,11 @@ function DashboardNavbar() {
       url: "/dashboard/transactions",
       icon: ReceiptText,
     },
+    {
+      title: "Analytics",
+      url: "/dashboard/analytics",
+      icon: BarChart3,
+    },
   ];
 
   return (
@@ -80,11 +85,6 @@ function DashboardNavbar() {
 
 function HelpNavbar() {
   const items = [
-    {
-      title: "Calendar",
-      url: "/dashboard/calendar",
-      icon: Calendar,
-    },
     {
       title: "Settings",
       url: "/dashboard/settings",
