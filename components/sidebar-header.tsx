@@ -1,8 +1,10 @@
 "use client";
 
+import * as React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ModeSwitcher } from "@/components/mode-switcher";
+import { getPathnameState } from "@/lib/pathname";
 
 import {
   Breadcrumb,
@@ -16,20 +18,12 @@ import { SidebarTrigger } from "./ui/sidebar";
 import { Separator } from "./ui/separator";
 import { Home } from "lucide-react";
 
-function resolveBreadcrumbName(segment: string) {
-  return decodeURIComponent(segment)
-    .replace(/[-_]+/g, " ")
-    .replace(/\b\w/g, (character) => character.toUpperCase());
-}
-
 export function SidebarHeader() {
   const pathname = usePathname();
-  const segments = pathname.split("/").filter(Boolean);
-
-  const breadcrumbs = segments.map((segment, index) => ({
-    label: resolveBreadcrumbName(segment),
-    url: `/${segments.slice(0, index + 1).join("/")}`,
-  }));
+  const { breadcrumbs } = React.useMemo(
+    () => getPathnameState(pathname),
+    [pathname],
+  );
 
   return (
     <header className="sticky top-0 flex h-14 shrink-0 items-center gap-2 justify-between px-4 border-b bg-muted/50 backdrop-blur-xl">

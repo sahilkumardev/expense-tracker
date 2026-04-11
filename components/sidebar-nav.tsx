@@ -1,5 +1,6 @@
 "use client";
 
+import * as React from "react";
 import {
   BarChart3,
   Home,
@@ -10,6 +11,7 @@ import {
 import { SidebarContent, SidebarGroup } from "@/components/ui/sidebar";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
+import { getPathnameState } from "@/lib/pathname";
 
 import {
   SidebarMenu,
@@ -23,25 +25,49 @@ type NavItem = {
   icon: typeof Home;
 };
 
-function normalizePathname(pathname: string) {
-  return pathname.replace(/\/+$/, "") || "/";
-}
+const dashboardItems: NavItem[] = [
+  {
+    title: "Dashboard",
+    url: "/dashboard",
+    icon: Home,
+  },
+  {
+    title: "Transactions",
+    url: "/dashboard/transactions",
+    icon: ReceiptText,
+  },
+  {
+    title: "Analytics",
+    url: "/dashboard/analytics",
+    icon: BarChart3,
+  },
+];
 
-function isExactPathMatch(pathname: string, url: string) {
-  return normalizePathname(pathname) === normalizePathname(url);
-}
+const helpItems: NavItem[] = [
+  {
+    title: "Settings",
+    url: "/dashboard/settings",
+    icon: Settings2,
+  },
+  {
+    title: "Help",
+    url: "/dashboard/help",
+    icon: MessageCircleQuestion,
+  },
+];
 
 function NavItems({ items }: { items: NavItem[] }) {
   const pathname = usePathname();
+  const { isExactPath } = React.useMemo(
+    () => getPathnameState(pathname),
+    [pathname],
+  );
 
   return (
     <>
       {items.map((item) => (
         <SidebarMenuItem key={item.title}>
-          <SidebarMenuButton
-            asChild
-            isActive={isExactPathMatch(pathname, item.url)}
-          >
+          <SidebarMenuButton asChild isActive={isExactPath(item.url)}>
             <Link href={item.url} className="flex items-center gap-2 w-full">
               <item.icon />
               <span>{item.title}</span>
@@ -54,29 +80,11 @@ function NavItems({ items }: { items: NavItem[] }) {
 }
 
 function DashboardNavbar() {
-  const items = [
-    {
-      title: "Dashboard",
-      url: "/dashboard",
-      icon: Home,
-    },
-    {
-      title: "Transactions",
-      url: "/dashboard/transactions",
-      icon: ReceiptText,
-    },
-    {
-      title: "Analytics",
-      url: "/dashboard/analytics",
-      icon: BarChart3,
-    },
-  ];
-
   return (
     <SidebarContent className="mt-2">
       <SidebarGroup>
         <SidebarMenu>
-          <NavItems items={items} />
+          <NavItems items={dashboardItems} />
         </SidebarMenu>
       </SidebarGroup>
     </SidebarContent>
@@ -84,22 +92,9 @@ function DashboardNavbar() {
 }
 
 function HelpNavbar() {
-  const items = [
-    {
-      title: "Settings",
-      url: "/dashboard/settings",
-      icon: Settings2,
-    },
-    {
-      title: "Help",
-      url: "/dashboard/help",
-      icon: MessageCircleQuestion,
-    },
-  ];
-
   return (
     <SidebarMenu>
-      <NavItems items={items} />
+      <NavItems items={helpItems} />
     </SidebarMenu>
   );
 }

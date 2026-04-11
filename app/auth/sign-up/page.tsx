@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import { SignUpForm } from "@/components/sign-up-form";
+import { SignUpForm } from "@/components/form-sign-up";
 import { Separator } from "@/components/ui/separator";
 import { GoogleButton } from "@/components/auth-ui";
 import Link from "next/link";

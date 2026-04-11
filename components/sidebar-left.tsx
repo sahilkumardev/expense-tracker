@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { getServerSession } from "@/lib/get-server-session";
 import { LogoutButton } from "@/components/auth-ui";
 import { Button } from "@/components/ui/button";
-import { DashboardNavbar, HelpNavbar } from "@/components/app-sidebar-nav";
+import { DashboardNavbar, HelpNavbar } from "@/components/sidebar-nav";
 import { UserAvatar } from "@/components/user-avatar";
 
 export async function SidebarLeft({

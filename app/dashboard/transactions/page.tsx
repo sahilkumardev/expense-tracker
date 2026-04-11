@@ -1,4 +1,4 @@
-import { TransactionsManager } from "@/components/transactions-manager";
+import { TransactionsManager } from "@/components/manage-transactions";
 import { getServerSession } from "@/lib/get-server-session";
 import { prisma } from "@/lib/prisma";
 
