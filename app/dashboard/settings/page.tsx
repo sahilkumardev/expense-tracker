@@ -1,5 +1,7 @@
-import { Categories } from "@/components/categories";
-import { AccountSettingsForm } from "@/components/profile-form";
+import { ManageCategories } from "@/components/manage-categories";
+import { ManageAccount } from "@/components/manage-account";
+import { ManageProfile } from "@/components/manage-profile";
+
 import { Button } from "@/components/ui/button";
 import { getServerSession } from "@/lib/get-server-session";
 import { MailIcon } from "lucide-react";
@@ -42,8 +44,9 @@ export default async function SettingsPage() {
         </div>
       )}
 
-      <AccountSettingsForm user={user} />
-      <Categories categoriesPromise={categories} />
+      <ManageProfile user={user} />
+      <ManageCategories categoriesPromise={categories} />
+      <ManageAccount />
     </section>
   );
 }

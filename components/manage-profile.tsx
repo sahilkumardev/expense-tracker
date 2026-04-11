@@ -70,7 +70,7 @@ interface AccountSettingsFormProps {
   user: User;
 }
 
-export function AccountSettingsForm({ user }: AccountSettingsFormProps) {
+export function ManageProfile({ user }: AccountSettingsFormProps) {
   const router = useRouter();
   const [isPending, startTransition] = React.useTransition();
 

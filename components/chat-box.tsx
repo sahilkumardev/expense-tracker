@@ -189,7 +189,7 @@ export default function ChatBox({ user }: { user: User }) {
 
         <div ref={endOfMessagesRef} />
       </SidebarContent>
-      <SidebarFooter className="mb-2 border-t">
+      <SidebarFooter className="mb-2 border-t flex-row gap-2 items-center">
         <InputGroup>
           <InputGroupAddon>
             <BotMessageSquare />
@@ -210,18 +210,17 @@ export default function ChatBox({ user }: { user: User }) {
             }}
             onChange={(e) => setInput(e.target.value)}
           />
-          <Separator orientation="vertical" />
-          <Button
-            className="rounded-r-2xl rounded-l-none bg-primary/60 hover:bg-primary/40 cursor-pointer pl-2.5 pr-3 text-foreground"
-            variant="link"
-            size="sm"
-            onClick={handleSend}
-            disabled={!canSend}
-            aria-label="Send message"
-          >
-            <Send />
-          </Button>
         </InputGroup>
+        <Button
+          className="rounded-full"
+          variant="outline"
+          size="icon-lg"
+          onClick={handleSend}
+          disabled={!canSend}
+          aria-label="Send message"
+        >
+          <Send />
+        </Button>
       </SidebarFooter>
     </>
   );

@@ -83,7 +83,7 @@ const categorySchema = z.object({
 
 type CategoryValues = z.infer<typeof categorySchema>;
 
-export function Categories({
+export function ManageCategories({
   categoriesPromise,
 }: {
   categoriesPromise: Promise<{ categories: Category[] }>;
